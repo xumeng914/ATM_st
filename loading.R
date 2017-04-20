@@ -16,3 +16,9 @@ data_tmb_col_name <- read.table("D:\\R_project\\ATM_st\\20170412_ATM\\SDI_F_CORE
                                   sep = ",",quote = ",",fileEncoding = "utf8")
 colnames(data_tmb)<-data_tmb_col_name$V1
 
+## loading 12_MTH_DAY_SMY
+data_12_MTH_DAY_SMY <- read.table("D:\\R_project\\ATM_st\\tmd\\DEL_LAST_12_MTH_DAY_SMY.csv",
+                       sep = ",",quote = ",",fileEncoding = "utf8")
+
+
+colnames(data_12_MTH_DAY_SMY)<-c("name","date","add","clear","qx","cx")

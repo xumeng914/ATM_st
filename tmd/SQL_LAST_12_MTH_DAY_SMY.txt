@@ -1,0 +1,46 @@
+insert overwrite local directory '/mnt/disk06/LAST_12_MTH_DAY_SMY' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+SELECT 
+BJ36NO08, 
+BJ01DATE,
+CASE WHEN AMT_ADD IS NULL THEN 0 ELSE AMT_ADD END AS AMT_ADD,
+CASE WHEN AMT_CLEAN IS NULL THEN 0 ELSE AMT_CLEAN END AS AMT_CLEAN,
+CASE WHEN AMT_QX IS NULL THEN 0 ELSE AMT_QX END AS AMT_QX,
+CASE WHEN AMT_CX IS NULL THEN 0 ELSE AMT_CX END AS AMT_CX
+FROM
+    (
+        SELECT 
+        B.BJ36NO08, 
+        B.BJ01DATE,
+        SUM(CASE WHEN A.TXTPINVT='1' THEN A.TAMTAMT END) AS AMT_ADD,   --not sure
+        SUM(CASE WHEN A.TXTPINVT='2' THEN A.TAMTAMT END) AS AMT_CLEAN, --not sure
+        SUM(CASE WHEN A.TXTPINVT='3' THEN A.TAMTAMT END) AS AMT_QX, 
+        SUM(CASE WHEN A.TXTPINVT='4' THEN A.TAMTAMT END) AS AMT_CX       
+        FROM 
+        (
+            SELECT * FROM BDPDB.SDI_F_CORE_BDFMHQBJ
+            -- WHERE SUBSTRING(BJ01DATE,1,6)=last 12 months    --last 12 months, pay attention to: time type!!! 
+            WHERE date(BJ01DATE) between '2016-03-01' and '2017-03-31'
+            AND BJ19JYLX='1' 
+            AND TRIM(RCSTRS1B)=''
+            AND BJ25FLAG='0' 
+            AND END_DATE='99990101'
+            AND BJ36NO08 IN 
+        	    (
+                  SELECT DISTINCT ATMNNO08 FROM BDPDB.SDI_F_CORE_BWFMATMB
+        	      WHERE TRIM(RCSTRS1B)='' AND END_DATE='99990101'
+                )
+        ) B
+        LEFT JOIN 
+        (
+            SELECT * FROM BDPDB.SDI_F_CORE_BWFMATMD 
+            -- WHERE SUBSTRING(TXDTDATE,1,6)=last 12 months    --last 12 months, pay attention to: time type!!! 
+            WHERE date(TXDTDATE) between '2016-03-01' and '2017-03-31'
+            AND TRIM(RCSTRS1B)=''
+            AND END_DATE='99990101'
+        ) A 
+        ON B.BJ01DATE=A.TXDTDATE AND B.BJ06TXSN=A.LPTNTXSN 
+        GROUP BY B.BJ36NO08,B.BJ01DATE 
+    )
+ORDER BY BJ36NO08,BJ01DATE
+
+-- cat /mnt/disk06/LAST_12_MTH_DAY_SMY/00*0 >DEL_LAST_12_MTH_DAY_SMY.csv

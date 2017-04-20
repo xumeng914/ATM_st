@@ -1,4 +1,18 @@
-d <- subset(data_12_MTH_DAY_SMY,data_12_MTH_DAY_SMY$name=="A1891000",select = c(1,2,5,6))
+nn <- unique(data_12_MTH_DAY_SMY$name)
+j<-1
+id<-c()
+for (i in 1:292)
+{
+  d <- subset(data_12_MTH_DAY_SMY,data_12_MTH_DAY_SMY$name==nn[i],select = c(5))
+  if(length(subset(d$qx,d$qx!=0))==nrow(d)) {
+    id[j] <- nn[i]
+    j<- j+1
+  }
+}
+
+######################################################################3
+
+d <- subset(data_12_MTH_DAY_SMY,data_12_MTH_DAY_SMY$name=="A1891013",select = c(1,2,5,6))
 
 tsales <- ts(d$qx, start=as.Date("2016-03-01"), frequency=1)
 s <- as.Date("2016-03-01")

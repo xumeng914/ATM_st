@@ -52,3 +52,6 @@ plot(forecast(fit, 1), xlab="Year",
      ylab=expression(paste("Temperature (", degree*F,")")),
      main="New Haven Annual Mean Temperature")
 accuracy(fit)
+
+
+

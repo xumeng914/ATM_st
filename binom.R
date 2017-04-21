@@ -29,4 +29,4 @@ yfit <- yfit*diff(h$mids[1:2])*length(x)
 lines(xfit, yfit, col="blue", lwd=2)
 box()
 
-
+pnorm(10,mean=mean(x), sd=sd(x))

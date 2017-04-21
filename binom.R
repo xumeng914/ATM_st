@@ -18,6 +18,7 @@ plot(x, y, type = "l", xlab = "norm Deviate", ylab = "Density",  yaxs = "i",xlim
 
 ###############################################################
 x <- d$qx
+png("mygraph.png")
 h<-hist(x,
         breaks=12,
         col="red",
@@ -28,5 +29,20 @@ yfit<-dnorm(xfit, mean=mean(x), sd=sd(x))
 yfit <- yfit*diff(h$mids[1:2])*length(x)
 lines(xfit, yfit, col="blue", lwd=2)
 box()
+dev.off()
 
 pnorm(10,mean=mean(x), sd=sd(x))
+qnorm(0.9,mean=mean(x), sd=sd(x)) 
+##################################################################
+
+nn <- unique(data_12_MTH_DAY_SMY$name)
+j<-1
+id<-c()
+for (i in 1:292)
+{
+  d <- subset(data_12_MTH_DAY_SMY,data_12_MTH_DAY_SMY$name==nn[i],select = c(5))
+  if(length(subset(d$qx,d$qx!=0))==nrow(d)) {
+    id[j] <- nn[i]
+    j<- j+1
+  }
+}
